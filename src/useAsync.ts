@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export function useAsync<AsyncResult>(fn: () => Promise<AsyncResult>): { isLoading: boolean, data: AsyncResult | null } {
+export function useAsync<AsyncResult>(params: any[], fn: (requestParams: any[]) => Promise<AsyncResult>): { isLoading: boolean, data: AsyncResult | null } {
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState<AsyncResult | null>(null);
 
@@ -8,7 +8,7 @@ export function useAsync<AsyncResult>(fn: () => Promise<AsyncResult>): { isLoadi
         let isCanceled = false;
 
         setIsLoading(true);
-        fn()
+        fn(params)
             .then((res) => {
                 if (isCanceled) {
                     return;

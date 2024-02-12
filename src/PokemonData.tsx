@@ -7,21 +7,21 @@ type PokemonDataProps = {
   name: string;
 };
 
-async function getPokemonData(pokemonName: string) {
+async function getPokemonData(pokemonName: string[]) {
   //   if (pokemonName === "Abra") {
   //     await new Promise((resolve) => setTimeout(resolve, 5000));
   //   }
   //   await new Promise((resolve) => setTimeout(resolve, Math.random() * 3000));
 
   const res = await axios.get(
-    `https://pokeapi.co/api/v2/pokemon/${pokemonName.toLowerCase()}`
+    `https://pokeapi.co/api/v2/pokemon/${pokemonName[0].toLowerCase()}`
   );
 
   return res.data;
 }
 
 export function PokemonData({ name }: PokemonDataProps) {
-  const {isLoading, data} = useAsync(getPokemonData);
+  const {isLoading, data} = useAsync([name], getPokemonData);
 
   // useEffect(() => {
   //   let isCanceled = false;
