@@ -1,6 +1,7 @@
 import axios from "axios";
 import styles from "./PokemonData.module.scss";
 import { useEffect, useState } from "react";
+import { useAsync } from "./useAsync";
 
 type PokemonDataProps = {
   name: string;
@@ -20,27 +21,26 @@ async function getPokemonData(pokemonName: string) {
 }
 
 export function PokemonData({ name }: PokemonDataProps) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [pokemonData, setPokemonData] = useState<any>(null);
+  const {isLoading, data} = useAsync(getPokemonData);
 
-  useEffect(() => {
-    let isCanceled = false;
+  // useEffect(() => {
+  //   let isCanceled = false;
 
-    setPokemonData(null);
-    getPokemonData(name).then((pokemonData) => {
-      if (isCanceled) {
-        return;
-      }
+  //   setPokemonData(null);
+  //   getPokemonData(name).then((pokemonData) => {
+  //     if (isCanceled) {
+  //       return;
+  //     }
 
-      setPokemonData(pokemonData);
-    });
+  //     setPokemonData(pokemonData);
+  //   });
 
-    return () => {
-      isCanceled = true;
-    };
-  }, [name]);
+  //   return () => {
+  //     isCanceled = true;
+  //   };
+  // }, [name]);
 
-  if (!pokemonData) {
+  if (isLoading) {
     return (
       <article className={styles.pokemonData}>
         <p className={styles.loadingIndicator}>Loading...</p>
@@ -53,19 +53,19 @@ export function PokemonData({ name }: PokemonDataProps) {
       <article>
         <h2>{name}</h2>
         <img
-          src={pokemonData.sprites.other["official-artwork"].front_default}
+          src={data.sprites.other["official-artwork"].front_default}
           alt=""
         />
       </article>
       <article className={styles.pokemonStats}>
         <h3>Stats</h3>
         <ul>
-          <li>HP: {getStat(pokemonData, "hp")}</li>
-          <li>Attack: {getStat(pokemonData, "attack")}</li>
-          <li>Defense: {getStat(pokemonData, "defense")}</li>
-          <li>Special attack: {getStat(pokemonData, "special-attack")}</li>
-          <li>Special defense: {getStat(pokemonData, "special-defense")}</li>
-          <li>Speed: {getStat(pokemonData, "speed")}</li>
+          <li>HP: {getStat(data, "hp")}</li>
+          <li>Attack: {getStat(data, "attack")}</li>
+          <li>Defense: {getStat(data, "defense")}</li>
+          <li>Special attack: {getStat(data, "special-attack")}</li>
+          <li>Special defense: {getStat(data, "special-defense")}</li>
+          <li>Speed: {getStat(data, "speed")}</li>
         </ul>
       </article>
     </article>
